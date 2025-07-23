@@ -22,9 +22,9 @@ interface Question {
 }
 
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: { code: string } }
-): Promise<NextResponse> {
+) {
   try {
     const { code } = params;
     

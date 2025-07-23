@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { code } = await request.json();
+    const { code } = await req.json();
     if (!code) {
       return NextResponse.json({ error: 'Room code is required' }, { status: 400 });
     }
