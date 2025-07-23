@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type RouteParams = {
-  params: {
-    code: string;
-  };
-};
-
 interface RawQuizRow {
   question_id: string;
   question_text: string;
@@ -28,11 +22,11 @@ interface Question {
 }
 
 export async function GET(
-  _request: NextRequest,
-  context: RouteParams
-) {
+  request: NextRequest,
+  { params }: { params: { code: string } }
+): Promise<NextResponse> {
   try {
-    const { code } = context.params;
+    const { code } = params;
     
     // Get room to verify it exists and get quiz ID
     const room = await prisma.$queryRaw`
