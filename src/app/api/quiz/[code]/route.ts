@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 interface RawQuizRow {
@@ -21,12 +21,15 @@ interface Question {
   answers: Answer[];
 }
 
+// Route segment config
+export const dynamic = 'force-dynamic';
+
 export async function GET(
-  req: Request,
+  request: Request,
   { params }: { params: { code: string } }
 ) {
   try {
-    const { code } = params;
+    const code = params.code;
     
     // Get room to verify it exists and get quiz ID
     const room = await prisma.$queryRaw`

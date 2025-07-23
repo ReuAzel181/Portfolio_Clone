@@ -1,6 +1,5 @@
-import { NextConfig } from 'next';
-
-const config: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: ['localhost', 'vercel.app'],
@@ -11,4 +10,4 @@ const config: NextConfig = {
   }
 };
 
-export default config;
+module.exports = nextConfig; 
