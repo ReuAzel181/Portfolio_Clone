@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { colors } from '@/utils/colors';
 import { Star } from '@/utils/types';
+import BackButton from '@/app/components/BackButton';
 
 function useStars(count: number) {
   const [stars, setStars] = useState<Star[]>([]);
@@ -39,6 +40,7 @@ export default function CreateRoomPage() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ background: palette.background }}>
+      <BackButton />
       {/* Starry background */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <svg width="100%" height="100%" className="absolute inset-0">

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { colors } from '@/utils/colors';
+import BackButton from '@/app/components/BackButton';
 
 export default function ProfilePage() {
   const [name, setName] = useState('');
@@ -68,7 +69,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: colors.light.background }}>
+    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ background: colors.light.background }}>
+      <BackButton />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -170,6 +172,6 @@ export default function ProfilePage() {
           </form>
         </div>
       </motion.div>
-    </div>
+    </main>
   );
 } 
