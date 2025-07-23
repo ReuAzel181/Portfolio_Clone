@@ -1,24 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { code } = await req.json();
+    const { code } = await request.json();
     if (!code) {
       return NextResponse.json({ error: 'Room code is required' }, { status: 400 });
     }
 
     // Get room
-    const room = await prisma.room.findUnique({
-      where: { code },
-      select: {
-        id: true,
-        code: true,
-        gameStarted: true
-      }
-    });
+    const room = await prisma.$queryRaw`
+      SELECT id, code, "gameStarted"
+      FROM "Room"
+      WHERE code = ${code}
+    `;
 
-    if (!room) {
+    if (!room || !Array.isArray(room) || room.length === 0) {
       return NextResponse.json({ error: 'Room not found' }, { status: 404 });
     }
 
@@ -26,20 +23,19 @@ export async function POST(req: NextRequest) {
     const players = await prisma.$queryRaw`
       SELECT id, name, roomid, joinedat, ready 
       FROM "Player" 
-      WHERE roomid = ${room.id} 
+      WHERE roomid = ${room[0].id} 
       ORDER BY joinedat ASC
     `;
 
     return NextResponse.json({
-      room: {
-        id: room.id,
-        code: room.code,
-        gameStarted: room.gameStarted
-      },
+      room: room[0],
       players
     });
   } catch (error) {
     console.error('Error getting room players:', error);
-    return NextResponse.json({ error: 'Failed to get room players' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to get room players' },
+      { status: 500 }
+    );
   }
 } 

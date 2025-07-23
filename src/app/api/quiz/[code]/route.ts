@@ -1,30 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { code: string } }
 ) {
   try {
-    const code = params.code;
-    if (!code) {
-      return NextResponse.json({ error: 'Room code is required' }, { status: 400 });
-    }
-
-    // Fetch room with quiz and questions
+    const { code } = params;
+    
+    // Get room to verify it exists and get quiz ID
     const room = await prisma.room.findUnique({
-      where: { code: code.toUpperCase() },
-      include: {
-        quiz: {
-          include: {
-            questions: {
-              include: {
-                answers: true
-              }
-            }
-          }
-        }
+      where: { code },
+      select: {
+        quizid: true
       }
     });
 
@@ -32,17 +20,32 @@ export async function GET(
       return NextResponse.json({ error: 'Room not found' }, { status: 404 });
     }
 
-    if (!room.quiz) {
-      return NextResponse.json({ error: 'Quiz not found for this room' }, { status: 404 });
+    if (!room.quizid) {
+      return NextResponse.json({ error: 'No quiz found for this room' }, { status: 404 });
     }
 
-    return NextResponse.json({
-      room,
-      quiz: room.quiz,
-      questions: room.quiz.questions,
+    // Get quiz questions with answers
+    const quiz = await prisma.quiz.findUnique({
+      where: { id: room.quizid },
+      include: {
+        questions: {
+          include: {
+            answers: true
+          }
+        }
+      }
     });
+
+    if (!quiz) {
+      return NextResponse.json({ error: 'Quiz not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ questions: quiz.questions });
   } catch (error) {
     console.error('Error fetching quiz:', error);
-    return NextResponse.json({ error: 'Failed to fetch quiz' }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Failed to fetch quiz' },
+      { status: 500 }
+    );
   }
 } 

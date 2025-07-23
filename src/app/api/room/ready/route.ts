@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { playerId, ready } = await req.json();
+    const { playerId, ready } = await request.json();
     console.log('Ready API called with:', { playerId, ready });
     
     if (!playerId) {
@@ -11,16 +11,18 @@ export async function POST(req: NextRequest) {
     }
 
     // Get current player to verify it exists
-    const existingPlayer = await prisma.player.findUnique({
-      where: { id: playerId }
-    });
+    const existingPlayer = await prisma.$queryRaw`
+      SELECT id, name, roomid
+      FROM "Player"
+      WHERE id = ${playerId}
+    `;
 
-    if (!existingPlayer) {
+    if (!existingPlayer || !Array.isArray(existingPlayer) || existingPlayer.length === 0) {
       console.error('Player not found:', playerId);
       return NextResponse.json({ error: 'Player not found' }, { status: 404 });
     }
 
-    console.log('Found player:', existingPlayer);
+    console.log('Found player:', existingPlayer[0]);
 
     // Update player ready status using raw SQL
     await prisma.$executeRaw`
