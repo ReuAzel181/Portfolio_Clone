@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from './supabaseClient';
+import { SupabaseChannel } from './types';
 
 export interface Player {
   id: string;
@@ -13,6 +14,11 @@ export interface Room {
   id: string;
   code: string;
   gameStarted: boolean;
+}
+
+interface Channels {
+  playerChannel?: SupabaseChannel;
+  roomChannel?: SupabaseChannel;
 }
 
 export function usePlayers(roomCode: string) {
@@ -54,7 +60,7 @@ export function usePlayers(roomCode: string) {
   }, [roomCode]);
 
   // Function to setup real-time subscriptions
-  const setupSubscriptions = useCallback(async (roomId: string) => {
+  const setupSubscriptions = useCallback(async (roomId: string): Promise<Channels> => {
     const playerChannel = supabase.channel(`players-${roomId}`)
       .on(
         'postgres_changes',
@@ -98,7 +104,7 @@ export function usePlayers(roomCode: string) {
   }, [fetchData]);
 
   useEffect(() => {
-    let channels: { playerChannel?: any; roomChannel?: any } = {};
+    let channels: Channels = {};
     let mounted = true;
 
     const initialize = async () => {

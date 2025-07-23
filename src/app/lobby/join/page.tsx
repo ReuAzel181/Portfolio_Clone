@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { colors } from '@/utils/colors';
+import { Star } from '@/utils/types';
 
 function useStars(count: number) {
-  const [stars, setStars] = useState<any[]>([]);
+  const [stars, setStars] = useState<Star[]>([]);
   useEffect(() => {
     const arr = Array.from({ length: count }, () => ({
-      cx: Math.random() * 100 + '%',
-      cy: Math.random() * 100 + '%',
+      cx: `${Math.random() * 100}%`,
+      cy: `${Math.random() * 100}%`,
       r: Math.random() * 1.2 + 0.3,
       opacity: Math.random() * 0.7 + 0.3,
     }));
@@ -88,9 +89,9 @@ export default function JoinRoomPage() {
             localStorage.setItem('playerId', data.playerId);
             
             router.push(`/lobby/${roomCode}`);
-          } catch (err: any) {
-            setError(err.message);
-          } finally {
+          } catch (error: unknown) {
+            console.error('Error joining room:', error);
+            setError(error instanceof Error ? error.message : 'Failed to join room');
             setLoading(false);
           }
         }} className="flex flex-col gap-4 w-full">

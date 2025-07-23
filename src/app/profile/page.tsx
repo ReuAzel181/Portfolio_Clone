@@ -60,10 +60,9 @@ export default function ProfilePage() {
       setUserId(data.id);
       
       router.push('/'); // Redirect to home page after saving
-    } catch (error: any) {
-      console.error('Error saving profile:', error);
-      setError(error.message || 'An unexpected error occurred');
-    } finally {
+    } catch (error: unknown) {
+      console.error('Error updating profile:', error);
+      setError(error instanceof Error ? error.message : 'Failed to update profile');
       setLoading(false);
     }
   };

@@ -4,13 +4,14 @@ import { useRouter } from 'next/navigation';
 import { usePlayers } from '@/utils/usePlayers';
 import { useEffect, useState } from 'react';
 import { colors } from '@/utils/colors';
+import { Star } from '@/utils/types';
 
 function useStars(count: number) {
-  const [stars, setStars] = useState<any[]>([]);
+  const [stars, setStars] = useState<Star[]>([]);
   useEffect(() => {
     const arr = Array.from({ length: count }, () => ({
-      cx: Math.random() * 100 + '%',
-      cy: Math.random() * 100 + '%',
+      cx: `${Math.random() * 100}%`,
+      cy: `${Math.random() * 100}%`,
       r: Math.random() * 1.2 + 0.3,
       opacity: Math.random() * 0.7 + 0.3,
     }));
@@ -80,9 +81,9 @@ export default function LobbyPage() {
 
       // Manually refetch to ensure state is up to date
       await refetch();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error toggling ready status:', error);
-      setReadyError(error.message || 'Failed to update ready status');
+      setReadyError(error instanceof Error ? error.message : 'Failed to update ready status');
     } finally {
       setIsTogglingReady(false);
     }

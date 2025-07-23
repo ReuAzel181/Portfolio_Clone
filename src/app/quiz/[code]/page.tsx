@@ -2,6 +2,7 @@
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { colors } from '@/utils/colors';
+import { Star } from '@/utils/types';
 
 interface Question {
   id: string;
@@ -18,11 +19,11 @@ interface Answer {
 }
 
 function useStars(count: number) {
-  const [stars, setStars] = useState<any[]>([]);
+  const [stars, setStars] = useState<Star[]>([]);
   useEffect(() => {
     const arr = Array.from({ length: count }, () => ({
-      cx: Math.random() * 100 + '%',
-      cy: Math.random() * 100 + '%',
+      cx: `${Math.random() * 100}%`,
+      cy: `${Math.random() * 100}%`,
       r: Math.random() * 1.2 + 0.3,
       opacity: Math.random() * 0.7 + 0.3,
     }));
@@ -57,9 +58,9 @@ export default function QuizPage() {
 
         setQuestions(data.questions);
         setLoading(false);
-      } catch (err: any) {
-        console.error('Error fetching quiz:', err);
-        setError(err.message);
+      } catch (error: unknown) {
+        console.error('Error fetching quiz:', error);
+        setError(error instanceof Error ? error.message : 'Failed to fetch quiz');
         setLoading(false);
       }
     }

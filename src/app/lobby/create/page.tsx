@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { colors } from '@/utils/colors';
+import { Star } from '@/utils/types';
 
 function useStars(count: number) {
-  const [stars, setStars] = useState<any[]>([]);
+  const [stars, setStars] = useState<Star[]>([]);
   useEffect(() => {
     const arr = Array.from({ length: count }, () => ({
-      cx: Math.random() * 100 + '%',
-      cy: Math.random() * 100 + '%',
+      cx: `${Math.random() * 100}%`,
+      cy: `${Math.random() * 100}%`,
       r: Math.random() * 1.2 + 0.3,
       opacity: Math.random() * 0.7 + 0.3,
     }));
@@ -88,9 +89,9 @@ export default function CreateRoomPage() {
             localStorage.setItem('playerId', data.playerId);
 
             router.push(`/lobby/${data.code}`);
-          } catch (err: any) {
-            setError(err.message);
-          } finally {
+          } catch (error: unknown) {
+            console.error('Error creating room:', error);
+            setError(error instanceof Error ? error.message : 'Failed to create room');
             setLoading(false);
           }
         }} className="flex flex-col gap-4 w-full">
