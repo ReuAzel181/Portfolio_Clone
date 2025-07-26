@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import GameModeCard from './components/GameModeCard';
 import PlayerStats from './components/PlayerStats';
 import BottomNav from './components/BottomNav';
+import Image from 'next/image';
 
 // Floating question mark animation
 const FloatingIcon = ({ delay, children }: { delay: number, children: React.ReactNode }) => (
@@ -108,62 +109,65 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 overflow-hidden relative pb-20">
-      {/* Animated background gradient */}
-      <div 
-        className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent"
-        style={{
-          transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)`,
-          transition: 'transform 0.2s ease-out'
-        }}
-      />
-
-      {/* Floating question marks and icons */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(8)].map((_, i) => (
-          <FloatingIcon key={i} delay={i * 0.3}>
-            <div className={`text-2xl text-purple-${300 + (i * 100)}/20`}>
-              {i % 2 === 0 ? '?' : '✨'}
-            </div>
-          </FloatingIcon>
-        ))}
+    <div className="flex flex-row gap-8 max-w-6xl mx-auto py-12 min-h-[calc(100vh-128px)]">
+      {/* Left column: Solo Quest */}
+      <div className="flex flex-col items-center w-[340px] gap-6">
+        <GameModeCard
+          title="Solo Quest"
+          description="Embark on a solo adventure!"
+          icon={<Image src="/assets/Icons/Icon - Info.png" alt="Info" width={32} height={32} />}
+          color="border-green-500"
+          backgroundImage="/assets/Backgrounds/Backround - Solo Quest.png"
+          subjectImage="/assets/Subjects/Subject - Solo Quest.png"
+          tall
+        />
+        <button className="w-full py-5 rounded-2xl bg-green-500 text-white text-3xl font-extrabold shadow-lg hover:scale-105 transition-transform border-4 border-white drop-shadow-xl tracking-wide" style={{fontFamily: 'Fredoka, sans-serif'}}>Solo Quest</button>
       </div>
-
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
-        {/* Player Stats */}
-        <div className="mb-8">
-          <PlayerStats
-            username={username || 'Guest'}
-            level={5}
-            coins={1250}
-            xp={750}
-            xpRequired={1000}
-          />
-        </div>
-
-        {/* Game Modes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {gameModes.map((mode, index) => (
-            <motion.div
-              key={mode.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <GameModeCard
-                title={mode.title}
-                description={mode.description}
-                icon={mode.icon}
-                color={mode.color}
-                onClick={() => console.log(`Clicked ${mode.title}`)}
-              />
-            </motion.div>
-          ))}
-        </div>
-      </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
+      {/* Right column: 2x3 grid of other modes */}
+      <div className="grid grid-cols-3 grid-rows-2 gap-6 flex-1">
+        <GameModeCard
+          title="Quick Quiz"
+          description="Quick quiz time! Earn prizes and streak up!"
+          icon={<Image src="/assets/Icons/Icon - Info.png" alt="Info" width={32} height={32} />}
+          color="border-blue-500"
+          backgroundImage="/assets/Backgrounds/Background - Quick Quiz.png"
+          subjectImage="/assets/Subjects/Subject - Quick Quiz.png"
+        />
+        <GameModeCard
+          title="Party Mode"
+          description="Play with friends in a party!"
+          icon={<Image src="/assets/Icons/Icon - Info.png" alt="Info" width={32} height={32} />}
+          color="border-pink-500"
+          backgroundImage="/assets/Backgrounds/Background - Party Mode.png"
+          subjectImage="/assets/Subjects/Subject - Party Mode.png"
+        />
+        <GameModeCard
+          title="Think & Type"
+          description="Type your answers!"
+          icon={<Image src="/assets/Icons/Icon - Info.png" alt="Info" width={32} height={32} />}
+          color="border-green-500"
+          backgroundImage="/assets/Backgrounds/Background - Think & Type.png"
+          subjectImage="/assets/Subjects/Subject - Think & Type.png"
+        />
+        <GameModeCard
+          title="Versus Arena"
+          description="Face off in 1v1 battles!"
+          icon={<Image src="/assets/Icons/Icon - Info.png" alt="Info" width={32} height={32} />}
+          color="border-blue-500"
+          backgroundImage="/assets/Backgrounds/Background - Versus Arena.png"
+          subjectImage="/assets/Subjects/Subject - Versus Arena.png"
+        />
+        <GameModeCard
+          title="Events"
+          description="Special events and rewards!"
+          icon={<Image src="/assets/Icons/Icon - Info.png" alt="Info" width={32} height={32} />}
+          color="border-yellow-500"
+          backgroundImage="/assets/Backgrounds/Background - Events.png"
+          subjectImage="/assets/Subjects/Subject - Events.png"
+        />
+        {/* Empty cell for grid symmetry */}
+        <div />
+      </div>
     </div>
   );
 }

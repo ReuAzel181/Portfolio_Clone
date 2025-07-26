@@ -1,8 +1,8 @@
-import { Inter } from 'next/font/google';
+import { Lilita_One } from 'next/font/google';
 import './globals.css';
 import Header from './components/Header';
 
-const inter = Inter({ subsets: ['latin'] });
+const lilitaOne = Lilita_One({ subsets: ['latin'], weight: '400' });
 
 export default function RootLayout({
   children,
@@ -11,9 +11,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={lilitaOne.className + " relative min-h-screen bg-[#8B5CF6] bg-gradient-to-br from-purple-400 via-purple-300 to-yellow-100 overflow-hidden bg-[url('/assets/Backgrounds/Full%20Background.png')] bg-cover bg-center"}>
         <Header />
-        <main className="min-h-screen pt-20 bg-gray-50">
+        <main className="min-h-screen pt-20">
           {children}
         </main>
       </body>
